@@ -6,10 +6,10 @@
      * Date: 15.10.2015
      * Time: 7:37
      */
-    //класс шифровщик
+    //РєР»Р°СЃСЃ С€РёС„СЂРѕРІС‰РёРє
     require_once "Encryption.php";
 
-    // подключаемся к базе
+    // РїРѕРґРєР»СЋС‡Р°РµРјСЃСЏ Рє Р±Р°Р·Рµ
     require_once "Connection.php";
 
     class User
@@ -37,16 +37,16 @@
          */
         public function __construct($email)
         {
-            //минимальная валидация емейла
+            //РјРёРЅРёРјР°Р»СЊРЅР°СЏ РІР°Р»РёРґР°С†РёСЏ РµРјРµР№Р»Р°
             $email = mb_strtolower($email);
             if (!preg_match("/^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$/", $email)) {
-                throw new Exception("Неверный почтовый ящик");
+                throw new Exception("РќРµРІРµСЂРЅС‹Р№ РїРѕС‡С‚РѕРІС‹Р№ СЏС‰РёРє");
             }
             $this->email = $email;
 
             $this->_userEncryptionSecret = self::_encryptEmail($email);
 
-            //сохраняем в базу
+            //СЃРѕС…СЂР°РЅСЏРµРј РІ Р±Р°Р·Сѓ
             $db = Connection::getInstance();
             $tbl = self::$_tableName;
             $statement = $db->prepare("INSERT INTO $tbl SET email = :email");
@@ -63,16 +63,16 @@
          */
         private static function _encryptEmail($email)
         {
-            //минимальная валидация емейла
+            //РјРёРЅРёРјР°Р»СЊРЅР°СЏ РІР°Р»РёРґР°С†РёСЏ РµРјРµР№Р»Р°
             if (!preg_match("/^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$/", $email)) {
-                throw new Exception("Неверный почтовый ящик");
+                throw new Exception("РќРµРІРµСЂРЅС‹Р№ РїРѕС‡С‚РѕРІС‹Р№ СЏС‰РёРє");
             }
-            //разбираем email на имя и домен для последующего сохранения и поиска по домену
+            //СЂР°Р·Р±РёСЂР°РµРј email РЅР° РёРјСЏ Рё РґРѕРјРµРЅ РґР»СЏ РїРѕСЃР»РµРґСѓСЋС‰РµРіРѕ СЃРѕС…СЂР°РЅРµРЅРёСЏ Рё РїРѕРёСЃРєР° РїРѕ РґРѕРјРµРЅСѓ
             $emailPieces = explode('@', $email);
             $name = $emailPieces[0];
             $domain = $emailPieces[1];
 
-            //устанавливаем шифратор
+            //СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј С€РёС„СЂР°С‚РѕСЂ
             $encryption = new Encryption(self::$_userEncryptionSecret);
             $encryptedName = $encryption->encrypt_data($name);
             $encryptedDomain = $encryption->encrypt_data($domain);
@@ -88,16 +88,16 @@
          */
         private static function _decryptEmail($encryptedEmail)
         {
-            //минимальная валидация
+            //РјРёРЅРёРјР°Р»СЊРЅР°СЏ РІР°Р»РёРґР°С†РёСЏ
             if (!preg_match("/^([A-Za-z0-9_\.-=\/\+]+)@([A-Za-z0-9_\.-=\/\+]+)$/", $encryptedEmail)) {
-                throw new Exception("Неверный почтовый ящик", 500);
+                throw new Exception("РќРµРІРµСЂРЅС‹Р№ РїРѕС‡С‚РѕРІС‹Р№ СЏС‰РёРє", 500);
             }
-            //разбираем email на имя и домен для последующего сохранения и поиска по домену
+            //СЂР°Р·Р±РёСЂР°РµРј email РЅР° РёРјСЏ Рё РґРѕРјРµРЅ РґР»СЏ РїРѕСЃР»РµРґСѓСЋС‰РµРіРѕ СЃРѕС…СЂР°РЅРµРЅРёСЏ Рё РїРѕРёСЃРєР° РїРѕ РґРѕРјРµРЅСѓ
             $emailPieces = explode('@', $encryptedEmail);
             $encryptedName = $emailPieces[0];
             $encryptedDomain = $emailPieces[1];
 
-            //устанавливаем шифратор
+            //СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј С€РёС„СЂР°С‚РѕСЂ
             $encryption = new Encryption(self::$_userEncryptionSecret);
             $name = $encryption->decrypt_data($encryptedName);
             $domain = $encryption->decrypt_data($encryptedDomain);
@@ -117,7 +117,7 @@
             $tbl = self::$_tableName;
 
             if ($domain === null) {
-                //получаем всех юзеров
+                //РїРѕР»СѓС‡Р°РµРј РІСЃРµС… СЋР·РµСЂРѕРІ
                 $encryptedUsers = $db->query(
                     "
                     SELECT uid, email
@@ -125,13 +125,13 @@
                     "
                 )->fetchAll(PDO::FETCH_ASSOC);
             } else {
-                //устанавливаем шифратор
+                //СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј С€РёС„СЂР°С‚РѕСЂ
                 $encryption = new Encryption(self::$_userEncryptionSecret);
 
-                //добавляем маску поиска
+                //РґРѕР±Р°РІР»СЏРµРј РјР°СЃРєСѓ РїРѕРёСЃРєР°
                 $encryptedDomain = "%@".$encryption->encrypt_data($domain);
 
-                //готовим запрос
+                //РіРѕС‚РѕРІРёРј Р·Р°РїСЂРѕСЃ
                 $statement = $db->prepare(
                     "
                     SELECT uid, email
@@ -140,12 +140,12 @@
                     "
                 );
                 $statement->bindValue(':domain', $encryptedDomain);
-                //запускаем запрос
+                //Р·Р°РїСѓСЃРєР°РµРј Р·Р°РїСЂРѕСЃ
                 $statement->execute();
                 $encryptedUsers = $statement->fetchAll(PDO::FETCH_ASSOC);
             }
 
-            //расшифровываем данные юзеров
+            //СЂР°СЃС€РёС„СЂРѕРІС‹РІР°РµРј РґР°РЅРЅС‹Рµ СЋР·РµСЂРѕРІ
             $users = array();
             foreach ($encryptedUsers as $encryptedUser) {
                 $users[] = array(

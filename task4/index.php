@@ -6,30 +6,33 @@
      * Time: 7:33
      */
 
-    // подключаем файл конфигурации
+    // РїРѕРґРєР»СЋС‡Р°РµРј С„Р°Р№Р» РєРѕРЅС„РёРіСѓСЂР°С†РёРё
     require_once "config.php";
 
-    //создаем юзеров
+    //РїРѕРґРєР»СЋС‡Р°РµРј РєР»Р°СЃСЃ СЋР·РµСЂРѕРІ
     require_once "class/User.php";
 
-    //поиск по домену
+    //РїРѕРёСЃРє РїРѕ РґРѕРјРµРЅСѓ
     if ($domain = $_GET['domain']) {
         $list = User::getList($domain);
     } else {
+        //РёР»Рё РІРµСЃСЊ СЃРїРёСЃРѕРє
         $list = User::getList();
     }
 
-    //добавление юзеров
+    //РґРѕР±Р°РІР»РµРЅРёРµ СЋР·РµСЂРѕРІ
     if ($email = $_POST['email']) {
         $user = new User($email);
+
+        //СЂРµРґРёСЂРµРєС‚ РЅР° СЃС‚СЂР°РЅРёС†Сѓ, С‡С‚РѕР±С‹ РѕС‡РёСЃС‚РёС‚СЊ РїРѕСЃС‚
         header("Location: /task4");
     }
 
-    //ниже простейшая форма поиска и добавления юзеров
+    //РЅРёР¶Рµ РїСЂРѕСЃС‚РµР№С€Р°СЏ С„РѕСЂРјР° РїРѕРёСЃРєР° Рё РґРѕР±Р°РІР»РµРЅРёСЏ СЋР·РµСЂРѕРІ
 ?>
 
 <form method="GET" action="">
-    <label for="domainInput"> Поиск по домену почты
+    <label for="domainInput"> РџРѕРёСЃРє РїРѕ РґРѕРјРµРЅСѓ РїРѕС‡С‚С‹
         <input id="domainInput" type="text" name="domain" value="<?= $_GET['domain'] ? $_GET['domain'] : "" ?>">
     </label>
 </form>
@@ -41,6 +44,6 @@
 </ul>
 
 <form method="POST">
-    <label for="userAdd"> Добавить email <input id="userAdd" type="text" name="email"> </label>
+    <label for="userAdd"> Р”РѕР±Р°РІРёС‚СЊ email <input id="userAdd" type="text" name="email"> </label>
 </form>
 

@@ -48,7 +48,7 @@
             }
 
             if ($image === false) {
-                echo "Ошибка получения изображения";
+                echo "РћС€РёР±РєР° РїРѕР»СѓС‡РµРЅРёСЏ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ";
             }
             echo $image;
         }
@@ -58,7 +58,7 @@
          */
         private function _getHeaders($path)
         {
-            //http заголовки
+            //http Р·Р°РіРѕР»РѕРІРєРё
             switch (exif_imagetype($path)) {
                 case IMAGETYPE_JPEG:
                     header("Content-Type: image/jpeg");
@@ -93,7 +93,7 @@
                 return false;
             }
 
-            //получаем расширение файла
+            //РїРѕР»СѓС‡Р°РµРј СЂР°СЃС€РёСЂРµРЅРёРµ С„Р°Р№Р»Р°
             switch (exif_imagetype($path)) {
                 case IMAGETYPE_BMP:
                     $image = @imagecreatefromwbmp($path);
@@ -113,18 +113,18 @@
                     break;
             }
 
-            //в случае ошибок возвращаем false
+            //РІ СЃР»СѓС‡Р°Рµ РѕС€РёР±РѕРє РІРѕР·РІСЂР°С‰Р°РµРј false
             if ($image === false) {
                 return false;
             }
 
-            // Получение высоты и ширины ватермарка
+            // РџРѕР»СѓС‡РµРЅРёРµ РІС‹СЃРѕС‚С‹ Рё С€РёСЂРёРЅС‹ РІР°С‚РµСЂРјР°СЂРєР°
             $marge_right = 50;
             $marge_bottom = 50;
             $sx = imagesx($pngStamp);
             $sy = imagesy($pngStamp);
 
-            //добавляем ватермарк
+            //РґРѕР±Р°РІР»СЏРµРј РІР°С‚РµСЂРјР°СЂРє
             imagecopy(
                 $image,
                 $pngStamp,
@@ -137,7 +137,7 @@
             );
 
             $img = @imagepng($image);
-            //освобождаем память
+            //РѕСЃРІРѕР±РѕР¶РґР°РµРј РїР°РјСЏС‚СЊ
             imagedestroy($image);
 
             return $img;

@@ -14,14 +14,14 @@
 
         public function __construct()
         {
-            //ïóòü äëÿ çàãðóçêè
+            //Ð¿ÑƒÑ‚ÑŒ Ð´Ð»Ñ Ð·Ð°Ð³Ñ€ÑƒÐ·ÐºÐ¸
             $destination = __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."uploads".DIRECTORY_SEPARATOR;
             if (!file_exists($destination)) {
                 mkdir($destination, 0777, true);
             }
             $this->_destination = $destination;
 
-            //ìàêñèìàëüíûé ðàçìåð êàðòèíêè â áàéòàõ
+            //Ð¼Ð°ÐºÑÐ¸Ð¼Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ€ ÐºÐ°Ñ€Ñ‚Ð¸Ð½ÐºÐ¸ Ð² Ð±Ð°Ð¹Ñ‚Ð°Ñ…
             $this->_maxImageSize = 2 * 1024 * 1024;
         }
 
@@ -41,7 +41,7 @@
         public function upload($file)
         {
             if ($this->_checkFile($file)) {
-                //èçáåãàåì êîíôëèêòà èìåí
+                //Ð¸Ð·Ð±ÐµÐ³Ð°ÐµÐ¼ ÐºÐ¾Ð½Ñ„Ð»Ð¸ÐºÑ‚Ð° Ð¸Ð¼ÐµÐ½
                 $name = date('Ymd_His')."_".$file['name'];
                 if (move_uploaded_file($file['tmp_name'], $this->_destination.$name)) {
                     chmod($this->_destination.$name, 0777);
@@ -63,22 +63,22 @@
          */
         private function _checkFile($file)
         {
-            //Ïðèøåë ëè ôàéë
+            //ÐŸÑ€Ð¸ÑˆÐµÐ» Ð»Ð¸ Ñ„Ð°Ð¹Ð»
             if (!is_uploaded_file($file['tmp_name'])) {
-                $this->_errors[] = "Ôàéë íå çàãðóæåí.";
+                $this->_errors[] = "Ð¤Ð°Ð¹Ð» Ð½Ðµ Ð·Ð°Ð³Ñ€ÑƒÐ¶ÐµÐ½.";
 
                 return false;
             }
-            //Ïðîâåðÿåì òèï ôàéëà. Ðàçðåøåíû òîëüêî èçîáðàæåíèÿ.
-            $size = getimagesize($file['tmp_name']);
+            //ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ Ñ‚Ð¸Ð¿ Ñ„Ð°Ð¹Ð»Ð°. Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ñ‹ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ.
+            $size = @getimagesize($file['tmp_name']);
             if ($size === false) {
-                $this->_errors[] = "Íåâåðíûé òèï ôàéëà. Ðàçðåøåíû òîëüêî èçîáðàæåíèÿ.";
+                $this->_errors[] = "ÐÐµÐ²ÐµÑ€Ð½Ñ‹Ð¹ Ñ‚Ð¸Ð¿ Ñ„Ð°Ð¹Ð»Ð°. Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ñ‹ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ.";
 
                 return false;
             }
-            //Ïðîâåðêà íà ðàçìåð. Ìàêñèìóì 1ìá
+            //ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð° Ñ€Ð°Ð·Ð¼ÐµÑ€. ÐœÐ°ÐºÑÐ¸Ð¼ÑƒÐ¼ 1Ð¼Ð±
             if ($file['size'] > $this->_maxImageSize) {
-                $this->_errors[] = "Ïðåâûøåí ðàçìåð èçîáðàæåíèÿ. Ìàêñèìàëüíî 1 ìá.";
+                $this->_errors[] = "ÐŸÑ€ÐµÐ²Ñ‹ÑˆÐµÐ½ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ. ÐœÐ°ÐºÑÐ¸Ð¼ÑƒÐ¼ ".$this->_maxImageSize." Ð±Ð°Ð¹Ñ‚.";
 
                 return false;
             }

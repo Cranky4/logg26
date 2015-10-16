@@ -5,7 +5,7 @@
      * Date: 13.10.2015
      * Time: 18:04
      */
-    //ñòàðòóåì ñåññèþ, åñëè åå åùå íåò
+    //ÑÑ‚Ð°Ñ€Ñ‚ÑƒÐµÐ¼ ÑÐµÑÑÐ¸ÑŽ, ÐµÑÐ»Ð¸ ÐµÐµ ÐµÑ‰Ðµ Ð½ÐµÑ‚
     session_start();
 
     include_once "class/Uploader.php";
@@ -14,12 +14,12 @@
     if ($_FILES && array_key_exists("pic", $_FILES)) {
         $uploader->setMaxSize(2 * 1024 * 1024);
         if ($pathInfo = $uploader->upload($_FILES['pic'])) {
-            //ñîõðàíÿåì èìÿ ôàéëà â ñåññèþ þçåðà
+            //ÑÐ¾Ñ…Ñ€Ð°Ð½ÑÐµÐ¼ Ð¸Ð¼Ñ Ñ„Ð°Ð¹Ð»Ð° Ð² ÑÐµÑÑÐ¸ÑŽ ÑŽÐ·ÐµÑ€Ð°
             $_SESSION['files'][] = $pathInfo['name'];
-            //ðåäèðåêò íà êàðòèíêó
+            //Ñ€ÐµÐ´Ð¸Ñ€ÐµÐºÑ‚ Ð½Ð° ÐºÐ°Ñ€Ñ‚Ð¸Ð½ÐºÑƒ
             header("Location: /task1/pic.php?path=/uploads/".$pathInfo['name']);
         } else {
-            //âûâîä îøèáîê
+            //Ð²Ñ‹Ð²Ð¾Ð´ Ð¾ÑˆÐ¸Ð±Ð¾Ðº
             print_r($uploader->getErrors());
         }
     }

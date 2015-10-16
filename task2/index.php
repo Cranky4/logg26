@@ -6,10 +6,17 @@
      * Time: 12:20
      */
 
+    /**
+     * @param $in
+     *
+     * @return bool
+     */
     function getRandomItem($in)
     {
-        $accuracy = 100;
+        //точночть
+        $accuracy = 10000;
 
+        //"складываем" элементы в массив в соответствие с их вероятностью
         $blackBox = array();
         foreach ($in as $key => $val) {
             $count = $val * $accuracy;
@@ -18,6 +25,7 @@
             }
         }
 
+        //получаем случайный
         if ($count = count($blackBox)) {
             $k = rand(0, $count - 1);
 
@@ -27,6 +35,7 @@
         return false;
     }
 
+    //входные данные
     $in = array(
         'a' => 1 / 3,
         'b' => 1 / 6,
@@ -34,7 +43,11 @@
     );
 
     $result = array();
+
+    //кол-во повторов
     $repeat = 100;
+
+    //проверяем распределение на $repeat выборках
     for ($i = 0; $i < $repeat; $i++) {
         $key = getRandomItem($in);
         if (!array_key_exists($key, $result)) {

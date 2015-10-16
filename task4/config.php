@@ -1,9 +1,9 @@
 <?php
     /**
-     * Ôàéë ñ êîíôèãóðàöèÿìè
+     * Ð¤Ð°Ð¹Ð» Ñ ÐºÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸ÑÐ¼Ð¸
      */
 
-    //íàñòðîéêè ïîäêîþ÷åíèÿ ê áàçå
+    //Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ¸ Ð¿Ð¾Ð´ÐºÐ¾ÑŽÑ‡ÐµÐ½Ð¸Ñ Ðº Ð±Ð°Ð·Ðµ
     defined("DB_HOST") || define("DB_HOST", "localhost");
     defined("DB_NAME") || define("DB_NAME", "aus_test");
     defined("DB_USER") || define("DB_USER", "root");
