@@ -36,7 +36,7 @@
         /**
          * @param $file
          *
-         * @return bool|string
+         * @return array|bool
          */
         public function upload($file)
         {
@@ -76,7 +76,7 @@
 
                 return false;
             }
-            //Проверка на размер. Максимум 1мб
+            //Проверка на размер.
             if ($file['size'] > $this->_maxImageSize) {
                 $this->_errors[] = "Превышен размер изображения. Максимум ".$this->_maxImageSize." байт.";
 
@@ -100,6 +100,7 @@
         public function getListUploads()
         {
             if ($files = @scandir($this->_destination)) {
+                //убираем из массива ссылки на текущую и родительскую папки
                 $files = array_diff($files, array('.', '..'));
                 $paths = array();
                 foreach ($files as $file) {

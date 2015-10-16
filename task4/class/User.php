@@ -6,20 +6,35 @@
      * Date: 15.10.2015
      * Time: 7:37
      */
-    //класс шифровщик
-    require_once "Encryption.php";
-
-    // подключаемся к базе
-    require_once "Connection.php";
-
     class User
     {
-        public $uid;
-        public $email;
-        public $encryptedEmail;
-
-        private static $_userEncryptionSecret = "secret123";
         private static $_tableName = "Users";
+        private static $_connection;
+        private static $_encryption;
+        private static $_cryptKey = 'secret123';
+
+        /**
+         * DI
+         *
+         * @param \Connection $connection
+         * @param \Encryption $encryption
+         */
+        public function __construct(PDO $connection, Encryption $encryption, $cryptKey = null)
+        {
+            self::$_connection = $connection;
+            self::$_encryption = $encryption;
+            if ($cryptKey) {
+                self::$_cryptKey = $cryptKey;
+            }
+        }
+
+        /**
+         * @return string
+         */
+        public static function getSecretKey()
+        {
+            return self::$_cryptKey;
+        }
 
         /**
          * @return string
@@ -35,24 +50,21 @@
          * @return bool
          * @throws \Exception
          */
-        public function __construct($email)
+        public function addUser($email)
         {
             //минимальная валидация емейла
             $email = mb_strtolower($email);
             if (!preg_match("/^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$/", $email)) {
-                throw new Exception("Неверный почтовый ящик");
+                throw new Exception("Неверный формат почтового ящика");
             }
-            $this->email = $email;
 
             $this->_userEncryptionSecret = self::_encryptEmail($email);
 
             //сохраняем в базу
-            $db = Connection::getInstance();
             $tbl = self::$_tableName;
-            $statement = $db->prepare("INSERT INTO $tbl SET email = :email");
+            $statement = self::$_connection->prepare("INSERT INTO $tbl SET email = :email");
 
-            $statement->execute(array(":email" => $this->_userEncryptionSecret));
-            $this->uid = $db->lastInsertId($tbl);
+            return $statement->execute(array(":email" => $this->_userEncryptionSecret));
         }
 
         /**
@@ -73,9 +85,8 @@
             $domain = $emailPieces[1];
 
             //устанавливаем шифратор
-            $encryption = new Encryption(self::$_userEncryptionSecret);
-            $encryptedName = $encryption->encrypt_data($name);
-            $encryptedDomain = $encryption->encrypt_data($domain);
+            $encryptedName = self::$_encryption->encrypt_data($name);
+            $encryptedDomain = self::$_encryption->encrypt_data($domain);
 
             return $encryptedName."@".$encryptedDomain;
         }
@@ -98,9 +109,8 @@
             $encryptedDomain = $emailPieces[1];
 
             //устанавливаем шифратор
-            $encryption = new Encryption(self::$_userEncryptionSecret);
-            $name = $encryption->decrypt_data($encryptedName);
-            $domain = $encryption->decrypt_data($encryptedDomain);
+            $name = self::$_encryption->decrypt_data($encryptedName);
+            $domain = self::$_encryption->decrypt_data($encryptedDomain);
 
             return $name."@".$domain;
         }
@@ -111,28 +121,24 @@
          * @return array
          * @throws \Exception
          */
-        public static function getList($domain = null)
+        public function getList($domain = null)
         {
-            $db = Connection::getInstance();
             $tbl = self::$_tableName;
 
             if ($domain === null) {
                 //получаем всех юзеров
-                $encryptedUsers = $db->query(
+                $encryptedUsers = self::$_connection->query(
                     "
                     SELECT uid, email
                     FROM $tbl
                     "
                 )->fetchAll(PDO::FETCH_ASSOC);
             } else {
-                //устанавливаем шифратор
-                $encryption = new Encryption(self::$_userEncryptionSecret);
-
                 //добавляем маску поиска
-                $encryptedDomain = "%@".$encryption->encrypt_data($domain);
+                $encryptedDomain = "%@".self::$_encryption->encrypt_data($domain);
 
                 //готовим запрос
-                $statement = $db->prepare(
+                $statement = self::$_connection->prepare(
                     "
                     SELECT uid, email
                     FROM $tbl
