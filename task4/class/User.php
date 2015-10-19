@@ -58,13 +58,13 @@
                 throw new Exception("Неверный формат почтового ящика");
             }
 
-            $this->_userEncryptionSecret = self::_encryptEmail($email);
+            $encryptiedEmail = self::_encryptEmail($email);
 
             //сохраняем в базу
             $tbl = self::$_tableName;
             $statement = self::$_connection->prepare("INSERT INTO $tbl SET email = :email");
 
-            return $statement->execute(array(":email" => $this->_userEncryptionSecret));
+            return $statement->execute(array(":email" => $encryptiedEmail));
         }
 
         /**
